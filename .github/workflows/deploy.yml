@@ -31,7 +31,9 @@ jobs:
 
       # Step 5: Log in to Railway using the token
       - name: Log in to Railway
-        run: railway login ${{ secrets.RAILWAY_TOKEN }}
+        run: railway login
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
       # Step 6: Deploy to Railway
       - name: Deploy to Railway
