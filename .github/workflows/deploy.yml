@@ -26,9 +26,7 @@ jobs:
         run: npm install -g @railway/cli
 
       - name: Log in to Railway
-        run: railway login --ci
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}  # Add your Railway token as a GitHub secret
+  run: railway login ${{ secrets.RAILWAY_TOKEN }}
 
       - name: Deploy to Railway
         run: railway up --detach
