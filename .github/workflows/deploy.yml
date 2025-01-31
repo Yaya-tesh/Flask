@@ -25,10 +25,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Step 4: Install Railway CLI
+      # Step 4: Install the latest Railway CLI
       - name: Install Railway CLI
-        run: npm install -g @railway/cli
+        run: npm install -g @railway/cli@latest
 
       # Step 5: Deploy to Railway using the token
       - name: Deploy to Railway
-        run: railway up --detach --token ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up --detach
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
