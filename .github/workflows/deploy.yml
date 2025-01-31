@@ -17,7 +17,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.9"  # Use Python 3.9
+          python-version: "3.9"
 
       # Step 3: Install dependencies
       - name: Install dependencies
@@ -29,7 +29,7 @@ jobs:
       - name: Install Railway CLI
         run: npm install -g @railway/cli@latest
 
-      # Step 5: Deploy to Railway using the API Token
+      # Step 5: Deploy to Railway
       - name: Deploy to Railway
         run: railway up --detach
         env:
