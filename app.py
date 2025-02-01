@@ -82,20 +82,21 @@ def view_users():
             return "<h2>No registered users.</h2><a href='/'>Back to Dashboard</a>"
 
         return render_template_string("""
-        <h2>Registered Users</h2>
-        <ul>
-            {% for user in users %}
-                <li>
-                    Username: {{ user['username'] }}, Computer ID: {{ user['computer_id'] }}, App Version: {{ user['app_version'] }}
-                    <form action="/unregister_user" method="post" style="display:inline;">
-                        <input type="hidden" name="computer_id" value="{{ user['computer_id'] }}">
-                        <button type="submit">Unregister</button>
-                    </form>
-                </li>
-            {% endfor %}
-        </ul>
-        <a href="/">Back to Dashboard</a>
+            <h2>Registered Users</h2>
+            <ul>
+                {% for user in users %}
+                    <li>
+                        Username: {{ user['username'] }}, Computer ID: {{ user['computer_id'] }}, App Version: {{ user['app_version'] }}
+                        <form action="/unregister_user" method="post" style="display:inline;">
+                            <input type="hidden" name="computer_id" value="{{ user['computer_id'] }}">
+                            <button type="submit">Unregister</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+            <a href="/">Back to Dashboard</a>
         """, users=registered_users)
+
     except Exception as e:
         logger.error(f"Error in /view_users: {e}")
         return "An error occurred while fetching registered users.", 500
@@ -114,20 +115,21 @@ def view_pending_users():
             return "<h2>No pending user approvals.</h2><a href='/'>Back to Dashboard</a>"
 
         return render_template_string("""
-        <h2>Pending User Approvals</h2>
-        <ul>
-            {% for user in pending %}
-                <li>
-                    Username: {{ user['username'] }}, Computer ID: {{ user['computer_id'] }}, App Version: {{ user['app_version'] }}
-                    <form action="/approve_user" method="post" style="display:inline;">
-                        <input type="hidden" name="computer_id" value="{{ user['computer_id'] }}">
-                        <button type="submit">Approve</button>
-                    </form>
-                </li>
-            {% endfor %}
-        </ul>
-        <a href="/">Back to Dashboard</a>
+            <h2>Pending User Approvals</h2>
+            <ul>
+                {% for user in pending %}
+                    <li>
+                        Username: {{ user['username'] }}, Computer ID: {{ user['computer_id'] }}, App Version: {{ user['app_version'] }}
+                        <form action="/approve_user" method="post" style="display:inline;">
+                            <input type="hidden" name="computer_id" value="{{ user['computer_id'] }}">
+                            <button type="submit">Approve</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+            <a href="/">Back to Dashboard</a>
         """, pending=pending_users)
+
     except Exception as e:
         logger.error(f"Error in /view_pending_users: {e}")
         return "An error occurred while fetching pending users.", 500
@@ -135,14 +137,14 @@ def view_pending_users():
 @app.route('/delete_user_form')
 def delete_user_form():
     return """
-    <h2>Delete a User</h2>
-    <form action="/delete_user" method="post">
-        Admin Username: <input type="text" name="admin_username" required><br>
-        Admin Password: <input type="password" name="admin_password" required><br>
-        Computer ID: <input type="text" name="computer_id" required><br>
-        <button type="submit">Delete</button>
-    </form>
-    <a href="/">Back to Dashboard</a>
+        <h2>Delete a User</h2>
+        <form action="/delete_user" method="post">
+            Admin Username: <input type="text" name="admin_username" required><br>
+            Admin Password: <input type="password" name="admin_password" required><br>
+            Computer ID: <input type="text" name="computer_id" required><br>
+            <button type="submit">Delete</button>
+        </form>
+        <a href="/">Back to Dashboard</a>
     """
 
 @app.route('/delete_user', methods=['POST'])
@@ -167,6 +169,7 @@ def delete_user():
             return f"User {deleted_user[0]} deleted successfully. <a href='/'>Back to Dashboard</a>"
         else:
             return f"Computer ID {computer_id} not found. <a href='/delete_user_form'>Try Again</a>", 404
+
     except Exception as e:
         logger.error(f"Error in /delete_user: {e}")
         return "An error occurred while deleting the user.", 500
@@ -195,6 +198,7 @@ def register():
         conn.close()
 
         return jsonify({"message": "Registration request submitted and awaiting admin approval."})
+
     except Exception as e:
         logger.error(f"Error in /register: {e}")
         return jsonify({"error": "An error occurred during registration."}), 500
@@ -218,6 +222,7 @@ def approve_user():
             return f"User {user[1]} approved successfully. <a href='/view_users'>Back to Users</a>"
         else:
             return f"Computer ID {computer_id} not found in pending approvals. <a href='/view_pending_users'>Back</a>", 404
+
     except Exception as e:
         logger.error(f"Error in /approve_user: {e}")
         return "An error occurred while approving the user.", 500
@@ -239,6 +244,7 @@ def unregister_user():
             return f"User {unregistered_user[0]} unregistered successfully. <a href='/view_users'>Back</a>"
         else:
             return f"Computer ID {computer_id} not found. <a href='/view_users'>Back</a>", 404
+
     except Exception as e:
         logger.error(f"Error in /unregister_user: {e}")
         return "An error occurred while unregistering the user.", 500
@@ -260,6 +266,7 @@ def verify():
             return jsonify({"message": f"User {user[0]} is verified!"})
         else:
             return jsonify({"message": "Computer not registered!"}), 404
+
     except Exception as e:
         logger.error(f"Error in /verify: {e}")
         return jsonify({"error": "An error occurred during verification."}), 500
