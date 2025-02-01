@@ -1,24 +1,37 @@
 import json
 import os
+import logging
 from flask import Flask, request, jsonify, render_template_string
 
 app = Flask(__name__)
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 
 # Use environment variable for persistent storage location (if Railway supports volumes)
 DATA_FILE = os.getenv("DATA_FILE", "data.json")
 
 # Load data from file
 def load_data():
+    if not os.path.exists(DATA_FILE):  # Create file if it doesn't exist
+        default_data = {"registered_users": {}, "pending_users": {}}
+        with open(DATA_FILE, "w") as f:
+            json.dump(default_data, f, indent=4)
+        return default_data
+
     try:
         with open(DATA_FILE, "r") as f:
             return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
+    except (json.JSONDecodeError, FileNotFoundError):
         return {"registered_users": {}, "pending_users": {}}
 
 # Save data to file
 def save_data(data):
-    with open(DATA_FILE, "w") as f:
-        json.dump(data, f, indent=4)
+    try:
+        with open(DATA_FILE, "w") as f:
+            json.dump(data, f, indent=4)
+    except Exception as e:
+        logging.error(f"Failed to save data: {e}")
 
 # Initialize data
 data = load_data()
@@ -34,7 +47,6 @@ dashboard_template = """
 <ul>
     <li><a href="/view_users">View Registered Users</a></li>
     <li><a href="/view_pending_users">View Pending Users</a></li>
-    <li><a href="/delete_user_form">Delete a User</a></li>
 </ul>
 """
 
@@ -52,10 +64,6 @@ def view_users():
         {% for cid, user in users.items() %}
             <li>
                 Username: {{ user['username'] }}, Computer ID: {{ cid }}, App Version: {{ user['app_version'] }}
-                <form action="/unregister_user" method="post" style="display:inline;">
-                    <input type="hidden" name="computer_id" value="{{ cid }}">
-                    <button type="submit">Unregister</button>
-                </form>
             </li>
         {% endfor %}
     </ul>
@@ -100,5 +108,5 @@ def verify():
     return jsonify({"message": "Computer not registered!"}), 404
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))  # Get port from Railway
-    app.run(host='0.0.0.0', port=port, debug=True)
+    port = int(os.environ.get("PORT", 8080))  # Railway assigns this dynamically
+    app.run(host='0.0.0.0', port=port)
