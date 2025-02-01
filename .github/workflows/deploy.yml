@@ -19,17 +19,23 @@ jobs:
         with: 
           python-version: "3.9"
 
-      # Step 3: Install dependencies
+      # Step 3: Install Node.js (for npm)
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      # Step 4: Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Step 4: Install the latest Railway CLI
+      # Step 5: Install the latest Railway CLI
       - name: Install Railway CLI
         run: npm install -g @railway/cli@latest
 
-      # Step 5: Deploy to Railway
+      # Step 6: Deploy to Railway
       - name: Deploy to Railway
         run: railway up --detach
         env:
