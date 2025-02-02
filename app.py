@@ -6,7 +6,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 
 # Initialize Flask app
-app = Flask(__name__)
+app = Flask(__name__) 
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
